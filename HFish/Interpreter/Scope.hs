@@ -13,7 +13,7 @@ data Scope =
   | GlobalScope
   | LocalScope
   | FLocalScope
-  {- | UniversalScope -}
+  {- UniversalScope -}
   deriving (Eq,Ord,Show,Bounded,Enum)
 
 asLens :: Scope -> Lens' FishState (Env Var)
