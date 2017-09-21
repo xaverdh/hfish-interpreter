@@ -71,8 +71,13 @@ library
   other-extensions:    PackageImports
   other-extensions:    FlexibleContexts
   other-extensions:    TemplateHaskell
-  other-extensions:    RankNTypes
+  other-extensions:    Rank2Types
+  other-extensions:    GADTs
   other-extensions:    GeneralizedNewtypeDeriving
+  other-extensions:    TupleSections
+  other-extensions:    MultiParamTypeClasses
+  other-extensions:    FunctionalDependencies
+  other-extensions:    ConstraintKinds
 
   build-depends:       base >=4.10 && <4.11
   build-depends:       fish-lang >=0.1 && <0.2
