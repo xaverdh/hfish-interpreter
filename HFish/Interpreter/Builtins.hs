@@ -34,6 +34,7 @@ import HFish.Interpreter.Builtins.Test
 import HFish.Interpreter.Builtins.Emit
 import HFish.Interpreter.Builtins.Count
 import HFish.Interpreter.Builtins.Functions
+import HFish.Interpreter.Builtins.Status
 
 allBuiltins :: Env Builtin
 allBuiltins =
@@ -65,5 +66,6 @@ allBuiltins =
     ,("emit",emitF)
     ,("count",countF)
     ,("functions",functionsF)
+    ,("status",statusF)
   ]
 

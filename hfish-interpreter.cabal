@@ -60,6 +60,7 @@ library
   exposed-modules:     HFish.Interpreter.Builtins.Cd
   exposed-modules:     HFish.Interpreter.Builtins.Bool
   exposed-modules:     HFish.Interpreter.Builtins.Source
+  exposed-modules:     HFish.Interpreter.Builtins.Status
   exposed-modules:     HFish.Interpreter.IO.Lazy
   exposed-modules:     HFish.Interpreter.Process.FdSetup
   exposed-modules:     HFish.Interpreter.Process.Process

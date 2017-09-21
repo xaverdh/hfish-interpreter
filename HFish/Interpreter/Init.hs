@@ -65,6 +65,7 @@ mkInitialFishReader atBreakpoint fishcompat =
     ,_errorK = []
     ,_breakpoint = atBreakpoint
     ,_fishCompatible = fishcompat
+    ,_interactive = False
     ,_executionStack = []
   }
   where

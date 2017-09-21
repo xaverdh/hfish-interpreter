@@ -139,6 +139,7 @@ data FishReader = FishReader {
     ,_errorK :: [String -> Fish ()]
     ,_breakpoint :: Fish ()
     ,_fishCompatible :: Bool
+    ,_interactive :: Bool
     ,_executionStack :: [String]
   }
 
