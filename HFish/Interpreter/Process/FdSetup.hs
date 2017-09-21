@@ -26,10 +26,10 @@ getMaxNumFds =
   liftIO (softLimit <$> getResourceLimit ResourceOpenFiles)
   <$$> \case
     ResourceLimitUnknown -> 2^8
-    -- ^ Conservative guess (ghc guesses the same
+    -- Conservative guess (ghc guesses the same
     -- when closing all handles in createProcess).
     ResourceLimitInfinity -> 2^12
-    -- ^ Random high number
+    -- Random high number
     ResourceLimit i -> fromInteger i
 
 data FdSetupState =

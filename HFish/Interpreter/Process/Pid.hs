@@ -28,7 +28,7 @@ getPID = \case
     Just i -> toSeq <$> liftIO (getProcessGroupIDOf i)
     Nothing -> toSeq
       <$> liftIO (readProcess "pidof" [Str.toString x] "")
-      -- ^ todo: do something better then calling pidof ?
+      -- todo: do something better then calling pidof ?
   where
     toSeq :: Show a => a -> Seq Globbed
     toSeq = pure . fromString . show

@@ -61,7 +61,7 @@ fishCreateProcess :: String -> [String] -> Fish ProcessID
 fishCreateProcess name args = do
   assertProgExecutable name
   getCWD >>= liftIO . setCurrentDirectory . Str.toString
-  -- ^ This is necessary since the current working directory
+  --   This is necessary since the current working directory
   --   is separate from the environment passed to the process.
   --
   --   The kernel holds it in a separate variable which is 
@@ -80,7 +80,7 @@ fishExec :: String -> [String] -> Fish a
 fishExec name args = do
   assertProgExecutable name
   getCWD >>= liftIO . setCurrentDirectory . Str.toString
-  -- ^ This is necessary since the current working directory
+  --   This is necessary since the current working directory
   --   is separate from the environment passed to the process.
   --
   --   The kernel holds it in a separate variable which is 

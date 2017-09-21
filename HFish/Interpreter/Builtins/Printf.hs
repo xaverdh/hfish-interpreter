@@ -136,7 +136,7 @@ plain = takeWhile1 (\c -> c /= '\\' && c /= '%')
   where    
     escaped = choice
       [ string "\\"
-        ,string "\"" -- ^ idiotic but thats what the manpage says
+        ,string "\"" -- idiotic but thats what the manpage says
         ,char 'a' $> "\a"
         ,char 'b' $> "\b"
         ,char 'e' $> "\ESC"

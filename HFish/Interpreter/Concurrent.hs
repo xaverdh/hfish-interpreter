@@ -32,7 +32,7 @@ createHandleMVarPair =
 forkFish :: Fish () -> Fish (MVar FishState)
 forkFish f = do
   r <- disallowK ask
-  {- ^^ silently ignore attempts to
+  {- silently ignore attempts to
         jump out of forked fish-action -}
   s <- get
   liftIO $ do
