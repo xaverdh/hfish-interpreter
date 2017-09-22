@@ -15,6 +15,7 @@ import qualified Data.Text as T
 import qualified Data.ByteString as B
 import Data.Sequence
 import Data.Semigroup
+import Data.Functor
 import Control.Monad
 import Control.Monad.State
 import Control.Monad.Reader
@@ -127,6 +128,8 @@ type Builtin =
   -- ^ The arguments to the call, already evaluated.
   -> Fish ()
 
+type HFishError = String
+
 -- | The /readonly/ state of the interpreter.
 --   Readonly means that it will not propagate the
 --   stack upwards, only downwards.
@@ -136,7 +139,7 @@ data FishReader = FishReader {
     ,_breakK :: () -> Fish ()
     ,_continueK :: () -> Fish ()
     ,_returnK :: () -> Fish ()
-    ,_errorK :: [String -> Fish ()]
+    ,_errorK :: [Maybe HFishError -> Fish ()]
     ,_breakpoint :: Fish ()
     ,_fishCompatible :: Bool
     ,_interactive :: Bool
@@ -175,8 +178,11 @@ setReturnK :: Fish () -> Fish ()
 setReturnK f = callCC (\k -> local (returnK .~ k) f)
 
 -- | Sets a breakpoint which is jumped to by a call to 'errork'.
-setErrorK :: Fish String -> Fish String
-setErrorK f = callCC (\k -> local (errorK %~ (k:)) f)
+--   The return value is Nothing if the computation did not throw
+--   an error and (Just /err/) if it threw an error /err/.
+setErrorK :: Fish a -> Fish (Maybe HFishError)
+setErrorK f = callCC $ \k -> 
+  local (errorK %~ (k:)) (f $> Nothing)
 
 -- | Calls the top '_errorK' continuation.
 --   Use this instead of 'error'
@@ -186,7 +192,7 @@ errork s = view errorK >>= \case
     tr <- stackTrace
     errorWithoutStackTrace
       $ s <> "\nhfish stack trace: " <> tr
-  k:_ -> k s *> pure undefined
+  k:_ -> k (Just s) *> pure undefined
 
 -- | Takes a lens to the error continuation stack,
 --   an interrupt routine and a fish action.
@@ -226,7 +232,7 @@ interruptK lensK interrupt f =
 finallyFish :: Fish () -> Fish b  -> Fish ()
 finallyFish f cleanup = 
   (f `onContinuationFish` cleanup)
-  *> void cleanup
+  *> cleanup $> ()
 
 -- | Like 'finallyFish' but only run cleanup if a
 --   continuation is called
