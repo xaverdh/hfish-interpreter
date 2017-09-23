@@ -70,7 +70,7 @@ mkInitialFishReader atBreakpoint fishcompat =
     ,_executionStack = []
   }
   where
-    warnB = error "No loop left to break."
-    warnC = error "No loop left to continue."
-    warnR = error "No function to return from."
+    warnB = errork "No loop left to break."
+    warnC = errork "No loop left to continue."
+    warnR = errork "No function to return from."
 
