@@ -16,7 +16,6 @@ import qualified Data.ByteString as B
 import Data.Sequence
 import Data.Semigroup
 import Data.Functor
-import Numeric.Natural
 import Control.Monad
 import Control.Monad.State
 import Control.Monad.Reader
@@ -129,7 +128,10 @@ type Builtin =
   -- ^ The arguments to the call, already evaluated.
   -> Fish ()
 
+-- | Type of an error.
 type HFishError = String
+
+data DebugFlag
 
 -- | The /readonly/ state of the interpreter.
 --   Readonly means that it will not propagate the
@@ -144,7 +146,7 @@ data FishReader = FishReader {
     ,_breakpoint :: Fish ()
     ,_fishCompatible :: Bool
     ,_interactive :: Bool
-    ,_debugLevel :: Natural
+    ,_debugFlags :: [DebugFlag]
     ,_executionStack :: [String]
   }
 
