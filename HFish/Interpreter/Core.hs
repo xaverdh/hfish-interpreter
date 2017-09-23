@@ -131,7 +131,7 @@ type Builtin =
 -- | Type of an error.
 type HFishError = String
 
-data DebugFlag
+data DebugFlag deriving (Eq,Ord,Show)
 
 -- | The /readonly/ state of the interpreter.
 --   Readonly means that it will not propagate the
