@@ -20,6 +20,10 @@ import Data.Functor
 -- import Data.ByteString as B
 
 
+-- | Create a handle-mvar pair. Spawns a thread which
+--   reads from the read end of the returned fd
+--   and writes the result into the /MVar/. Returns the
+--   write end of the fd along with said /MVar/.
 createHandleMVarPair :: Fish (MVar Str,PT.Fd)
 createHandleMVarPair =
   liftIO $ do
@@ -29,6 +33,9 @@ createHandleMVarPair =
     -- forkIO ( P.fdToHandle rE >>= B.hGetContents >>= putMVar mvar )
     pure (mvar,wE)
 
+
+-- | Fork a fish action, returning an mvar which will
+--   contain the resulting state once the action finishes.
 forkFish :: Fish () -> Fish (MVar FishState)
 forkFish f = do
   r <- disallowK ask

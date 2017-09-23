@@ -30,12 +30,9 @@ import System.IO.Error
 
 -- | The Fish 'Monad', it holds both mutable and unmutable (reader)
 --   state.
---
 --   In addition it contains a ContT transformer, which is used
 --   to implement control flow features,
---
 --   such as: return, break, continue and error handling.
---
 --   The latter means that we use our own error handling mechanism
 --   rather then the builtin 'error'.
 newtype Fish a = Fish ((ReaderT FishReader) (StateT FishState (ContT FishState IO)) a)
@@ -50,10 +47,8 @@ runFish (Fish f) r s =
 
 -- | Return an IO action, running the given fish action
 --   in the IO Monad with and returning the new / final state.
---
 --   The fish action will be run with the state (and reader) from
 --   the time of the call to projectIO,
---
 --   i.e. projectIO captures this state when called.
 --
 projectIO :: Fish () -> Fish (IO FishState)
@@ -122,7 +117,6 @@ localise l f = do
 type Builtin = 
   Bool
   -- ^ whether the builtin is forked (executed in background)
-  --
   --   builtins may or may not honour this hint. Most don't.
   -> [Str]
   -- ^ The arguments to the call, already evaluated.
@@ -131,6 +125,8 @@ type Builtin =
 -- | Type of an error.
 type HFishError = String
 
+-- | Debug flags, these give fine grained control over 
+--   various debug features.
 data DebugFlag = DebugAll
   deriving (Eq,Ord,Show)
 
@@ -159,7 +155,7 @@ instance HasFdTable Fish where
   askFdTable = view fdTable
   localFdTable = local . (fdTable %~)
 
-
+-- | Print the hfish /stacktrace/.
 stackTrace :: Fish String
 stackTrace =
   L.intercalate " <- "
@@ -201,7 +197,6 @@ errork s = view errorK >>= \case
 
 -- | Takes a lens to the error continuation stack,
 --   an interrupt routine and a fish action.
---
 --   It then executes this action and, should a jump occur,
 --   runs the interrupt routine before continuing the jump.
 interruptErrorK :: Lens' FishReader [a -> Fish ()]
@@ -217,7 +212,6 @@ interruptErrorK lensK interrupt f =
 
 -- | Takes a lens to one of the continuations,
 --   an interrupt routine and a fish action.
---
 --   It then executes this action and, should a jump occur,
 --   runs the interrupt routine before continuing the jump.
 interruptK :: Lens' FishReader (a -> Fish ())
@@ -267,6 +261,7 @@ disallowK = local
     . ( errorK .~ repeat noA ) )
   where
     noA = const $ pure ()
+
 
 guardIOFailure :: IO a -> Fish a
 guardIOFailure action =

@@ -56,8 +56,7 @@ insert fd pfd =
 --
 --   It will appear closed to builtins and child processes.
 --
---   Silently ignores the case where fd does not exits and
---   /ignores any errors thrown on close/.
+--   Silently ignores the case where fd does not exits.
 close_ :: HasFdTable m => PT.Fd -> m a -> m a
 close_ pfd k =
   flip localFdTable k
@@ -70,8 +69,7 @@ close_ pfd k =
 --
 --   It will appear closed to builtins and child processes.
 --
---   Silently ignores the case where fd does not exist and
---   /ignores any errors thrown on close/.
+--   Silently ignores the case where fd does not exist.
 close :: HasFdTable m => L.Fd -> m a -> m a
 close fd k = lookupFd fd >>= \case
   Nothing -> k
@@ -82,7 +80,7 @@ fdWeakClose :: PT.Fd -> IO ()
 fdWeakClose pfd = E.catch (P.closeFd pfd)
   (\e -> pure $ const () (e::E.IOException) )
 
--- | The initial FdTable stdin / -out / -err.
+-- | The initial FdTable with stdin, stdout and stderr.
 --
 initialFdTable :: FdTable
 initialFdTable = FdTable fds []

@@ -154,21 +154,16 @@ switchStA e brnchs = view fishCompatible >>=
   bool (hfishSwitch e brnchs) (fishSwitch e brnchs)
 
 -- | Match a string against a number of glob patterns.
---
 --   This implementation deviates strongly from the original fish:
 --
 --   If given an array instead of a string, it will match against
 --   the arrays serialisation.
---
 --   Arguments to the /case/ branches are serialised as well
 --   and then interpreted as glob patterns.
---
 --   These glob patterns are matched directly against the string,
 --   superseding the usual glob pattern expansion.
---
 --   The matching is lazy and does not fall through, i.e.
 --   when a branch is taken all branches following it
--- 
 --   will not be evaluated. This seems to agree with the fish impl.
 hfishSwitch ::  Expr T.Text t -> [(Expr T.Text t,Prog T.Text t)] -> Fish ()
 hfishSwitch e branches = do
@@ -333,8 +328,7 @@ evalConcatE e1 e2 = do
   where
     cartesian = liftA2 (<>)
 
-{- Try to interpret Expression as an Int -}
-
+-- | Try to interpret Expression as an Int
 evalInt :: Expr T.Text t -> Fish (Seq Int)
 evalInt e = do
   vs <- evalArg e
