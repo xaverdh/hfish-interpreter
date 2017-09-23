@@ -147,7 +147,7 @@ data FishReader = FishReader {
     ,_breakpoint :: Fish ()
     ,_fishCompatible :: Bool
     ,_interactive :: Bool
-    ,_debugFlags :: [DebugFlag]
+    ,_debugFlags :: S.Set DebugFlag
     ,_executionStack :: [String]
   }
 
