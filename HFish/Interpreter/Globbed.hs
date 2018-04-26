@@ -59,7 +59,6 @@ showGlobbed = F.fold . fmap f . unGlob
       Left g -> case g of
         StarGl -> "*"
         DiStarGl -> "**"
-        QMarkGl -> "?"
       Right s -> Str.toString s
 
 
@@ -101,7 +100,6 @@ genParser = F.fold . fmap f . unGlob
       Left g -> case g of
         StarGl -> few $ psym (/='/')
         DiStarGl -> few anySym
-        QMarkGl -> pure <$> psym (/='/') 
 
 -- Used by fishSwitch
 genParserFromStr :: Str -> RE Char String
