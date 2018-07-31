@@ -99,7 +99,7 @@ library
   build-depends:       process >=1.6 && <1.7
   build-depends:       hfish-parser >=0.1 && <0.2
   build-depends:       fish-parser >=0.1 && <0.2
-  build-depends:       trifecta >=2.0 && < 2.1
+  build-depends:       trifecta >= 2 && < 2.1
   build-depends:       ansi-wl-pprint >=0.6 && <0.7
   build-depends:       attoparsec >=0.13 && <0.14
   build-depends:       GenericPretty >=1.2 && <1.3
