@@ -242,15 +242,6 @@ onContinuationFish f cleanup =
   . interruptK returnK cleanup
   . interruptErrorK errorK cleanup ) f
 
--- | Make sure cleanup is run regardless of continuation jumping
---   or errors (IO or pure).
-finally :: Fish () -> IO b  -> Fish ()
-finally f cleanup = 
-  asIO
-    ( f `onContinuationFish` liftIO cleanup )
-    ( liftIO . (`E.finally` cleanup) )
-  >>= put
-
 -- | Clearing all continuations,
 --   calls to them will be silently ignored.
 disallowK :: Fish a -> Fish a
