@@ -60,7 +60,7 @@ mkInitialFishState = do
 
     incShlvl = Env.alter inc "SHLVL"
     initStatus = Env.insert "status" $ mkVar (pure "0")
-    initPid pid = Env.insert "fish_pid" $ mkVar (pure pid)
+    initPid pid = Env.insert "own_pid" $ mkVar (pure pid)
 
 
 mkInitialFishReader :: Fish () -> Bool -> IO FishReader
