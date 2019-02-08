@@ -47,7 +47,7 @@ import qualified Data.Text as T
 pipeFish :: L.Fd -> Fish () -> Fish () -> Fish ()
 pipeFish fd f1 f2 = do
   (rE,wE) <- liftIO P.createPipe
-  forkFish $ setup fd rE wE f1 `finally` fdWeakClose wE
+  forkFish (setup fd rE wE f1) (fdWeakClose wE)
   setup L.Fd0 wE rE f2
   where
     setup :: L.Fd -> PT.Fd -> PT.Fd -> Fish a -> Fish a
@@ -76,8 +76,7 @@ withFileR fpath fd k = do
     P.ReadOnly
     Nothing
     P.defaultFileFlags
-  insert fd pfd
-    ( k `finally` P.closeFd pfd )
+  insert fd pfd k
 
 
 withFileW :: String -> L.FileMode -> L.Fd -> Fish () -> Fish ()
@@ -92,8 +91,7 @@ withFileW fpath mode fd k =
       L.FModeNoClob -> popen (Just accessMode)
         P.defaultFileFlags { P.exclusive = True }
     case mpfd of
-      Just pfd -> insert fd pfd
-        ( k `finally` P.closeFd pfd )
+      Just pfd -> insert fd pfd k
       Nothing -> pure ()
   where
     accessMode = 

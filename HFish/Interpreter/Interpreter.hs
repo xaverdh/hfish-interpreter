@@ -6,7 +6,7 @@ import qualified Fish.Lang as L
 
 import HFish.Interpreter.Scope
 import HFish.Interpreter.Core
-import HFish.Interpreter.FdTable as FDT
+import HFish.Interpreter.FdTable as FdT
 import HFish.Interpreter.IO
 import HFish.Interpreter.Status
 import HFish.Interpreter.Var
@@ -269,7 +269,7 @@ evalBracesE es =
 evalCmdSubstE :: CmdRef T.Text t -> Fish (Seq Globbed)
 evalCmdSubstE (CmdRef _ prog ref) = do
   (mvar,wE) <- createHandleMVarPair
-  FDT.insert Fd1 wE (progA prog) `finally` PIO.closeFd wE
+  FdT.insert Fd1 wE (progA prog) `finally` FdT.fdWeakClose wE
   str <- liftIO $ takeMVar mvar
   Seq.fromList (Str.lines str) & \xs ->
     fmap fromStr <$> case ref of

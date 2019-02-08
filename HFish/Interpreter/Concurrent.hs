@@ -9,6 +9,7 @@ import Control.Monad.Reader
 import Control.Lens
 import Control.Concurrent
 import Control.Concurrent.MVar
+import Control.Exception as E
 
 import System.Process
 import System.Exit
@@ -36,13 +37,15 @@ createHandleMVarPair =
 
 -- | Fork a fish action, returning an mvar which will
 --   contain the resulting state once the action finishes.
-forkFish :: Fish () -> Fish (MVar FishState)
-forkFish f = do
+--   Second parameter is a cleanup routine, which will be run
+--   regardless of any errors.
+forkFish :: Fish () -> IO () -> Fish (MVar FishState)
+forkFish f cleanup = do
   r <- disallowK ask
   {- silently ignore attempts to
         jump out of forked fish-action -}
   s <- get
-  liftIO $ do
+  liftIO $ (`E.finally` cleanup) $ do
     mvar <- newEmptyMVar
     forkIO $ do
       s' <- runFish f r s

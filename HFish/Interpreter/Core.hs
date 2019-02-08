@@ -3,7 +3,7 @@ module HFish.Interpreter.Core where
 
 import Fish.Lang
 import HFish.Interpreter.Util
-import HFish.Interpreter.FdTable as FDT
+import HFish.Interpreter.FdTable as FdT
 import HFish.Interpreter.Env as Env
 
 import Data.NText as NText
@@ -134,7 +134,7 @@ data DebugFlag = DebugAll
 --   Readonly means that it will not propagate the
 --   stack upwards, only downwards.
 data FishReader = FishReader {
-    _fdTable :: FDT.FdTable
+    _fdTable :: FdT.FdTable
     ,_builtins :: Env Builtin
     ,_breakK :: () -> Fish ()
     ,_continueK :: () -> Fish ()
