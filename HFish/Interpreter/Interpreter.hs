@@ -269,8 +269,9 @@ evalBracesE es =
 evalCmdSubstE :: CmdRef T.Text t -> Fish (Seq Globbed)
 evalCmdSubstE (CmdRef _ prog ref) = do
   (mvar,wE) <- createHandleMVarPair
-  FdT.insert Fd1 wE (progA prog) `finally` FdT.fdWeakClose wE
-  str <- liftIO $ takeMVar mvar
+  stMVar <- forkFish (FdT.insert Fd1 wE (progA prog)) (FdT.fdWeakClose wE)
+  str <- liftIO (takeMVar mvar)
+  liftIO (takeMVar stMVar) >>= put
   Seq.fromList (Str.lines str) & \xs ->
     fmap fromStr <$> case ref of
       Nothing -> pure xs
