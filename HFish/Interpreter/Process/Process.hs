@@ -73,7 +73,7 @@ fishCreateProcess name args = do
       True{-search path-}
       args
       ( Just env )
-  lastPid .= Just pid
+  updateLastPID pid
   pure pid
 
 fishExec :: String -> [String] -> Fish a

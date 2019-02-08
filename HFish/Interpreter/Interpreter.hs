@@ -13,7 +13,6 @@ import HFish.Interpreter.Var
 import HFish.Interpreter.Cwd
 import HFish.Interpreter.Globbed
 import HFish.Interpreter.Process.Process
-import HFish.Interpreter.Process.Pid
 import HFish.Interpreter.Concurrent
 import HFish.Interpreter.Slice
 import HFish.Interpreter.Util
@@ -252,17 +251,12 @@ evalArg arg = do
 evalExpr :: Expr T.Text t -> Fish (Seq Globbed)
 evalExpr = \case
   GlobE _ g -> pure . pure $ fromGlob g
-  ProcE _ e -> evalProcE e
   HomeDirE _ -> evalHomeDirE
   StringE _ t -> pure . pure . fromStr $ Str.fromText t
   VarRefE _ q vref -> evalVarRefE q vref
   BracesE _ es -> evalBracesE es
   CmdSubstE _ cmdref -> evalCmdSubstE cmdref
   ConcatE _ e1 e2 -> evalConcatE e1 e2
-
-evalProcE :: Expr T.Text t -> Fish (Seq Globbed)
-evalProcE e =
-  evalArg e >>= (getPID . F.fold)
 
 evalHomeDirE :: Fish (Seq Globbed)
 evalHomeDirE = getHOME

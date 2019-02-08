@@ -15,6 +15,7 @@ import qualified HFish.Interpreter.Stringy as Str
 
 import Control.Lens
 import Control.Monad
+import Control.Monad.IO.Class (liftIO)
 import qualified Data.Map as M
 import qualified Data.Text as T
 import Data.Bifunctor
@@ -23,6 +24,7 @@ import System.IO
 import System.Exit
 import System.Environment
 import System.Directory
+import System.Posix.Process (getProcessID)
 
 readOnly = ["SHLVL","PWD"]
 
@@ -30,11 +32,12 @@ mkInitialFishState :: IO FishState
 mkInitialFishState = do
   wdir <- Str.fromString <$> getCurrentDirectory
   inherited <- map (bimap Str.fromString (mkVarXp . pure . Str.fromString)) <$> getEnvironment
+  pid <- Str.fromString . show <$> liftIO getProcessID
   teeVars inherited & \(ro,rw) ->
     pure $ emptyFishState {
       _functions = Env.empty
       ,_globalEnv = Env.fromTextList rw
-      ,_readOnlyEnv = (initStatus . incShlvl . Env.fromTextList) ro
+      ,_readOnlyEnv = initRoEnv pid ro
       ,_status = ExitSuccess
       ,_cwdir = wdir
     }
@@ -49,9 +52,15 @@ mkInitialFishState = do
     inc mv =
       (mkVarXp . pure . Str.fromString . show . (+1))
       <$> (mv >>= readVarMaybe)
-    
+   
+    initRoEnv pid = initPid pid
+      . initStatus
+      . incShlvl
+      . Env.fromTextList
+
     incShlvl = Env.alter inc "SHLVL"
     initStatus = Env.insert "status" $ mkVar (pure "0")
+    initPid pid = Env.insert "fish_pid" $ mkVar (pure pid)
 
 
 mkInitialFishReader :: Fish () -> Bool -> IO FishReader
