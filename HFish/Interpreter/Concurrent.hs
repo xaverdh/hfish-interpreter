@@ -45,9 +45,9 @@ forkFish f cleanup = do
   {- silently ignore attempts to
         jump out of forked fish-action -}
   s <- get
-  liftIO $ (`E.finally` cleanup) $ do
+  liftIO $ do
     mvar <- newEmptyMVar
-    forkIO $ do
+    forkIO $ (`E.finally` cleanup) $ do
       s' <- runFish f r s
       putMVar mvar s'
     pure mvar
