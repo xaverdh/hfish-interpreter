@@ -16,6 +16,7 @@ import qualified Data.ByteString as B
 import Data.Sequence
 import Data.Semigroup
 import Data.Functor
+import Data.Maybe
 import Control.Monad
 import Control.Monad.State
 import Control.Monad.Reader
@@ -188,12 +189,15 @@ setErrorK f = callCC $ \k ->
 -- | Calls the top '_errorK' continuation.
 --   Use this instead of 'error'
 errork :: String -> Fish a
-errork s = view errorK >>= \case
+errork = callErrorK . Just
+
+callErrorK :: Maybe HFishError -> Fish a
+callErrorK mbErr = view errorK >>= \case
   [] -> do
     tr <- stackTrace
     errorWithoutStackTrace
-      $ s <> "\nhfish stack trace: " <> tr
-  k:_ -> k (Just s) *> pure undefined
+      $ fromMaybe "" mbErr <> "\nhfish stack trace: " <> tr
+  k:_ -> k mbErr *> pure undefined
 
 -- | Takes a lens to the error continuation stack,
 --   an interrupt routine and a fish action.
@@ -242,14 +246,16 @@ onContinuationFish f cleanup =
   . interruptK returnK cleanup
   . interruptErrorK errorK cleanup ) f
 
--- | Clearing all continuations,
+-- | Clearing all continuations in a fish reader state,
 --   calls to them will be silently ignored.
-disallowK :: Fish a -> Fish a
-disallowK = local
+--   Except for errorK for which a handler is explicitly
+--   passed to this function as the first argument.
+disallowK :: (Maybe HFishError -> Fish ()) -> FishReader -> FishReader
+disallowK onErr =
     ( ( breakK .~ noA        )
     . ( continueK .~ noA     )
     . ( returnK .~ noA       )
-    . ( errorK .~ repeat noA ) )
+    . ( errorK .~ repeat onErr ) )
   where
     noA = const $ pure ()
 

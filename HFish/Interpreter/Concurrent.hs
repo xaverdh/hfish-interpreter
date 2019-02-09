@@ -39,17 +39,17 @@ createHandleMVarPair =
 --   contain the resulting state once the action finishes.
 --   Second parameter is a cleanup routine, which will be run
 --   regardless of any errors.
-forkFish :: Fish () -> IO () -> Fish (MVar FishState)
+forkFish :: Fish () -> IO () -> Fish (MVar (Either (Maybe HFishError) FishState))
 forkFish f cleanup = do
-  r <- disallowK ask
-  {- silently ignore attempts to
-        jump out of forked fish-action -}
+  r <- ask
   s <- get
   liftIO $ do
     mvar <- newEmptyMVar
-    forkIO $ (`E.finally` cleanup) $ do
-      s' <- runFish f r s
-      putMVar mvar s'
+    let onErr err = liftIO $ putMVar mvar (Left err) >> myThreadId >>= killThread
+    flip forkFinally (const cleanup) $ do
+      s' <- runFish f (disallowK onErr r) s
+      {- Run fish action and ignore attempts to
+         jump out of forked fish-action -}
+      putMVar mvar (Right s')
     pure mvar
-
 
