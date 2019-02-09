@@ -41,9 +41,10 @@ import qualified Data.Text as T
 
 -- | Connect two fish actions by a pipe.
 --   The fist action is expected to write to the (abstract) fd
---   passed to 'pipeFish',
+--   passed to 'pipeFish'.
 --
---   the second is expected to read from Fd0 (abstract stdin).
+--   The second is expected to read from Fd0 (abstract stdin).
+--   The resulting state is obtained from the second action.
 pipeFish :: L.Fd -> Fish () -> Fish () -> Fish ()
 pipeFish fd f1 f2 = do
   (rE,wE) <- liftIO P.createPipe
@@ -98,6 +99,7 @@ withFileW fpath mode fd k =
       foldr unionFileModes nullFileMode
       [ ownerReadMode, ownerWriteMode, groupReadMode, otherReadMode ]
     
+    -- TODO: treat more exceptions (catch all and redirect into errorK?)
     treatExceptions :: IO PT.Fd -> Fish (Maybe PT.Fd)
     treatExceptions f =  liftIO
       ( E.tryJust 
