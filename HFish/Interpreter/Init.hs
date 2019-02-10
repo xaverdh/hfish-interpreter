@@ -26,7 +26,6 @@ import System.Environment
 import System.Directory
 import System.Posix.Process (getProcessID)
 
-readOnly = ["SHLVL","PWD"]
 
 mkInitialFishState :: IO FishState
 mkInitialFishState = do
@@ -47,7 +46,8 @@ mkInitialFishState = do
       x:xs ->
         (if fst x `elem` readOnly then first else second)
         (x:) (teeVars xs)
-    
+    readOnly = ["SHLVL","PWD"]
+
     inc :: Maybe Var -> Maybe Var
     inc mv =
       (mkVarXp . pure . Str.fromString . show . (+1))
