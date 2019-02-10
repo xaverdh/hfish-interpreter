@@ -39,6 +39,7 @@ import Control.Applicative
 import Control.Concurrent
 import Control.Concurrent.MVar
 import qualified System.Posix.IO as PIO
+import qualified System.Unix.IO as UIO
 
 
 progA :: Prog T.Text t -> Fish ()
@@ -268,13 +269,13 @@ evalBracesE es =
 
 evalCmdSubstE :: CmdRef T.Text t -> Fish (Seq Globbed)
 evalCmdSubstE (CmdRef _ prog ref) = do
-  (resMVar,wE) <- createHandleMVarPair
+  (rE,wE) <- liftIO PIO.createPipe
   stMVar <- forkFish (FdT.insert Fd1 wE (progA prog)) (FdT.fdWeakClose wE)
-  str <- liftIO (takeMVar resMVar)
+  res <- liftIO $ UIO.fdGetContents rE
   liftIO (takeMVar stMVar) >>= \case
     Left err -> callErrorK err
     Right s -> put s
-  Seq.fromList (Str.lines str) & \xs ->
+  Seq.fromList (Str.lines res) & \xs ->
     fmap fromStr <$> case ref of
       Nothing -> pure xs
       Just _ -> do

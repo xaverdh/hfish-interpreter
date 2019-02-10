@@ -14,25 +14,10 @@ import Control.Exception as E
 import System.Process
 import System.Exit
 import System.IO
-import System.Unix.IO
 import qualified System.Posix.IO as P
 import qualified System.Posix.Types as PT
 import Data.Functor
 -- import Data.ByteString as B
-
-
--- | Create a handle-mvar pair. Spawns a thread which
---   reads from the read end of the returned fd
---   and writes the result into the /MVar/. Returns the
---   write end of the fd along with said /MVar/.
-createHandleMVarPair :: Fish (MVar Str,PT.Fd)
-createHandleMVarPair =
-  liftIO $ do
-    (rE,wE) <- P.createPipe
-    mvar <- newEmptyMVar
-    forkIO ( fdGetContents rE >>= putMVar mvar )
-    -- forkIO ( P.fdToHandle rE >>= B.hGetContents >>= putMVar mvar )
-    pure (mvar,wE)
 
 
 -- | Fork a fish action, returning an mvar which will
