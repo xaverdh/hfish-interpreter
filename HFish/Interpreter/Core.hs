@@ -246,18 +246,21 @@ onContinuationFish f cleanup =
   . interruptK returnK cleanup
   . interruptErrorK errorK cleanup ) f
 
+
 -- | Clearing all continuations in a fish reader state,
---   calls to them will be silently ignored.
+--   replacing them by calls to errork.
 --   Except for errorK for which a handler is explicitly
 --   passed to this function as the first argument.
-disallowK :: (Maybe HFishError -> Fish ()) -> FishReader -> FishReader
-disallowK onErr =
-    ( ( breakK .~ noA        )
-    . ( continueK .~ noA     )
-    . ( returnK .~ noA       )
-    . ( errorK .~ repeat onErr ) )
+resetK :: [Maybe HFishError -> Fish ()] -> FishReader -> FishReader
+resetK onErr =
+    ( ( breakK .~ const warnB    )
+    . ( continueK .~ const warnC )
+    . ( returnK .~ const warnR   )
+    . ( errorK .~ onErr          ) )
   where
-    noA = const $ pure ()
+    warnB = errork "No loop left to break."
+    warnC = errork "No loop left to continue."
+    warnR = errork "No function to return from."
 
 
 guardIOFailure :: IO a -> Fish a

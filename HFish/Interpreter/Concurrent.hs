@@ -45,11 +45,16 @@ forkFish f cleanup = do
   s <- get
   liftIO $ do
     mvar <- newEmptyMVar
-    let onErr err = liftIO $ putMVar mvar (Left err) >> myThreadId >>= killThread
     flip forkFinally (const cleanup) $ do
-      s' <- runFish f (disallowK onErr r) s
+      s' <- runFish f (resetReader mvar r) s
       {- Run fish action and ignore attempts to
          jump out of forked fish-action -}
-      putMVar mvar (Right s')
+      putMVar mvar $ Right s'
     pure mvar
+  where
+    onErr mvar err = liftIO $ do
+      putMVar mvar (Left err)
+      myThreadId >>= killThread
+    resetReader mvar = resetK (repeat $ onErr mvar)
+
 
