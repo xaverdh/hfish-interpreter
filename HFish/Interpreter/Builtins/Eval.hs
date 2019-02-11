@@ -5,11 +5,12 @@ module HFish.Interpreter.Builtins.Eval (
   -- ,callF
 ) where
 
+import HFish.Interpreter.Str (Str)
 import HFish.Interpreter.Parsing
 import HFish.Interpreter.Core
 import HFish.Interpreter.Interpreter (progA)
 import HFish.Interpreter.Process.Process (fishExec)
-import qualified HFish.Interpreter.Stringy as Str
+import qualified HFish.Interpreter.Str as Str
 
 import qualified Data.Text as T
 import Data.Semigroup

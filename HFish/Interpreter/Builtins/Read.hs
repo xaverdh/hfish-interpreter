@@ -5,13 +5,14 @@ module HFish.Interpreter.Builtins.Read (
 
 import Fish.Lang as L
 
+import HFish.Interpreter.Str (Str)
 import HFish.Interpreter.Core
 import HFish.Interpreter.IO
 import HFish.Interpreter.Var
 import HFish.Interpreter.Status
 import HFish.Interpreter.SetCmd
 import HFish.Interpreter.Util
-import qualified HFish.Interpreter.Stringy as Str
+import qualified HFish.Interpreter.Str as Str
 
 import qualified Data.Text as T
 import qualified Data.ByteString.Char8 as BC

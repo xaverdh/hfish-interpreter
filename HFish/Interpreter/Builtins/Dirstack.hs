@@ -12,7 +12,7 @@ import HFish.Interpreter.Concurrent
 import HFish.Interpreter.Cwd
 import HFish.Interpreter.Status
 import HFish.Interpreter.Args
-import qualified HFish.Interpreter.Stringy as Str
+import qualified HFish.Interpreter.Str as Str
 
 import qualified Data.Text as T
 import Data.Semigroup

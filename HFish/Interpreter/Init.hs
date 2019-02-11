@@ -11,7 +11,7 @@ import HFish.Interpreter.FdTable (initialFdTable)
 import HFish.Interpreter.Var
 import HFish.Interpreter.Builtins (allBuiltins)
 import HFish.Interpreter.Env as Env
-import qualified HFish.Interpreter.Stringy as Str
+import qualified HFish.Interpreter.Str as Str
 
 import Control.Lens
 import Control.Monad
@@ -22,15 +22,16 @@ import Data.Bifunctor
 import Text.Read
 import System.IO
 import System.Exit
-import System.Environment
+-- import System.Environment
 import System.Directory
 import System.Posix.Process (getProcessID)
+import System.Posix.Env.ByteString (getEnvironment)
 
 
 mkInitialFishState :: IO FishState
 mkInitialFishState = do
   wdir <- Str.fromString <$> getCurrentDirectory
-  inherited <- map (bimap Str.fromString (mkVarXp . pure . Str.fromString)) <$> getEnvironment
+  inherited <- collectEnv <$> getEnvironment
   pid <- Str.fromString . show <$> liftIO getProcessID
   teeVars inherited & \(ro,rw) ->
     pure $ emptyFishState {
@@ -47,6 +48,8 @@ mkInitialFishState = do
         (if fst x `elem` readOnly then first else second)
         (x:) (teeVars xs)
     readOnly = ["SHLVL","PWD"]
+
+    collectEnv = map (bimap Str.toText (mkVarXp . pure))
 
     inc :: Maybe Var -> Maybe Var
     inc mv =

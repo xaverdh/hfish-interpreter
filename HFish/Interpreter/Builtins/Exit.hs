@@ -6,7 +6,7 @@ module HFish.Interpreter.Builtins.Exit (
 import HFish.Interpreter.Core
 import HFish.Interpreter.Status
 import HFish.Interpreter.Args
-import qualified HFish.Interpreter.Stringy as Str
+import qualified HFish.Interpreter.Str as Str
 
 import Data.Semigroup
 import Control.Monad.IO.Class

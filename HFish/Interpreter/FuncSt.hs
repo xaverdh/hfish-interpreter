@@ -3,12 +3,13 @@ module HFish.Interpreter.FuncSt where
 
 import Fish.Lang hiding (Scope)
 import HFish.Interpreter.Scope
+import HFish.Interpreter.Str (Str)
 import HFish.Interpreter.Core
 import HFish.Interpreter.Var
 import HFish.Interpreter.Util
 import HFish.Interpreter.Events
 import HFish.Interpreter.Env as Env
-import qualified HFish.Interpreter.Stringy as Str
+import qualified HFish.Interpreter.Str as Str
 
 import Control.Lens hiding ((:<))
 import Control.Applicative

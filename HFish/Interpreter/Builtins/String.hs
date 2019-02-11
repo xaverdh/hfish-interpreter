@@ -4,11 +4,12 @@ module HFish.Interpreter.Builtins.String (
   stringF
 ) where
 
+import HFish.Interpreter.Str (Str)
 import HFish.Interpreter.Core hiding (value)
 import HFish.Interpreter.IO
 import HFish.Interpreter.Concurrent
 import HFish.Interpreter.Status
-import qualified HFish.Interpreter.Stringy as Str
+import qualified HFish.Interpreter.Str as Str
 
 import System.Unix.ByteString.Class
 import System.Unix.IO
@@ -33,19 +34,19 @@ import Options.Applicative.Builder as OB
 {- TODO: escape -> wait for UnParser,
          match, replace
 
-   CONVERT ME to operate on bytestrings with a flag for Unicode handling -}
+   ADD: Unicode handling (with a flag) -}
 
 
 stringF :: Builtin
 stringF _ xs = do
-  let ts = map T.unpack mbOpts
-   in execParserPure defaultPrefs parser ts
+  execParserPure defaultPrefs parser mbOpts
     & \case
       Success f -> f
       Failure err -> errork . fst
         $ renderFailure err "string: invalid arguments given\n"
   where
-    (mbOpts,rest) = splitAt 10 $ map Str.toText xs
+    (mbOpts',rest) = splitAt 10 xs
+    mbOpts = map Str.toString mbOpts'
     
     parser = info opts idm
 
@@ -58,7 +59,7 @@ stringF _ xs = do
     
     cmd n p = OB.command n (info p idm)
     remainer = fmap (<> rest) . many
-      $ OB.argument text (metavar "STRINGS...")
+      $ OB.argument strP (metavar "STRINGS...")
     
     lengthOpt = lengthF
       <$> switch (short 'q' <> long "quiet")
@@ -70,29 +71,29 @@ stringF _ xs = do
       <*> remainer
     joinOpt = joinF
       <$> switch (short 'q' <> long "quiet")
-      <*> OB.argument text (metavar "SEP")
+      <*> OB.argument strP (metavar "SEP")
       <*> remainer
     trimOpt = trimF
       <$> switch (short 'q' <> long "quiet")
       <*> switch (short 'l' <> long "left")
       <*> switch (short 'r' <> long "right")
-      <*> option text (short 'c' <> long "chars" <> metavar "CHARS")
+      <*> option str (short 'c' <> long "chars" <> metavar "CHARS")
       <*> remainer
     splitOpt = splitF
       <$> switch (short 'q' <> long "quiet")
       <*> option (Just <$> auto) (short 'm' <> long "max" <> metavar "MAX" <> value Nothing)
       <*> switch (short 'r' <> long "right")
-      <*> OB.argument text (metavar "SEP")
+      <*> OB.argument strP (metavar "SEP")
       <*> remainer
-    text = maybeReader (Just . T.pack)
+
+    strP = maybeReader (Just . Str.fromString)
     
-lengthF :: Str.Stringy s => Bool -> [s] -> Fish ()
+lengthF :: Bool -> [Str] -> Fish ()
 lengthF q ts = do
   unless q $ forM_ ts (echo . show . Str.length)
   if all (==Str.empty) ts then bad else ok
 
-subF :: (ToByteString Fish s,Str.Stringy s)
-  => Bool -> Int -> Maybe Int -> [s] -> Fish ()
+subF :: Bool -> Int -> Maybe Int -> [Str] -> Fish ()
 subF q start mlen ts = 
   map sub ts & \ts' -> do
   unless q $ echo $ Str.unlines ts'
@@ -100,8 +101,7 @@ subF q start mlen ts =
   where
     sub = (maybe id Str.take mlen) . Str.drop (start-1)    
 
-joinF :: (ToByteString Fish s,Str.Stringy s)
-  => Bool -> s -> [s] -> Fish ()
+joinF :: Bool -> Str -> [Str] -> Fish ()
 joinF q sep ts = 
   Str.intercalate sep ts & \ts' -> do
   unless q $ echo ts'
@@ -110,8 +110,7 @@ joinF q sep ts =
     [_] -> bad
     _ -> ok
 
-trimF :: (ToByteString Fish s,Str.Stringy s)
-  => Bool -> Bool -> Bool -> s -> [s] -> Fish ()
+trimF :: Bool -> Bool -> Bool -> Str -> [Str] -> Fish ()
 trimF q l r cs ts = 
   map trim ts & \ts' -> do
   unless q $ echo $ Str.unlines ts'
@@ -125,8 +124,7 @@ trimF q l r cs ts =
     inStr c t = isJust (Str.find (==c) t)
 
 
-splitF :: (ToByteString Fish s,Str.Stringy s)
-  => Bool -> Maybe Int -> Bool -> s -> [s] -> Fish ()
+splitF :: Bool -> Maybe Int -> Bool -> Str -> [Str] -> Fish ()
 splitF q m r sep ts = 
   let ts' = map (workSplitF m r sep) ts
   in do
@@ -134,8 +132,7 @@ splitF q m r sep ts =
     if ts == ts' then bad else ok
 
 
-workSplitF :: Str.Stringy s
-  => Maybe Int -> Bool -> s -> s -> s
+workSplitF :: Maybe Int -> Bool -> Str -> Str -> Str
 workSplitF m r sep t =
   let ts = Str.splitOn sep t
       l = length ts

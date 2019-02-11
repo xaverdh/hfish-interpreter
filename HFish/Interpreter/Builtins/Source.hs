@@ -7,7 +7,7 @@ import HFish.Interpreter.Core
 import HFish.Interpreter.Interpreter
 import HFish.Interpreter.Parsing
 import HFish.Interpreter.Status
-import qualified HFish.Interpreter.Stringy as Str
+import qualified HFish.Interpreter.Str as Str
 
 import Data.Text.IO as TextIO
 import Data.Semigroup

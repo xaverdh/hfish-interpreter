@@ -3,12 +3,13 @@ module HFish.Interpreter.Builtins.Functions (
   functionsF
 ) where
 
+import HFish.Interpreter.Str (Str)
 import HFish.Interpreter.Core
 import HFish.Interpreter.Util
 import HFish.Interpreter.IO
 import HFish.Interpreter.Status
 import qualified HFish.Interpreter.Env as Env
-import qualified HFish.Interpreter.Stringy as Str
+import qualified HFish.Interpreter.Str as Str
 
 import Control.Applicative
 import Control.Monad
@@ -84,7 +85,7 @@ functionsCopy src dst = do
   where
     doesNotExist = errork
       $ "does not exist "
-      <> Str.toString src
+      <> show src
 
 functionsDesc :: T.Text -> T.Text -> Fish ()
 functionsDesc = undefined

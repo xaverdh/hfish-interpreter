@@ -7,7 +7,7 @@ import HFish.Interpreter.Core
 import HFish.Interpreter.Util
 import HFish.Interpreter.Events
 import HFish.Interpreter.Args
-import qualified HFish.Interpreter.Stringy as Str
+import qualified HFish.Interpreter.Str as Str
 
 import qualified Data.Sequence as Seq
 import Data.NText

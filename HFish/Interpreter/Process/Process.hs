@@ -32,7 +32,7 @@ import HFish.Interpreter.Var
 import HFish.Interpreter.Cwd
 import HFish.Interpreter.Process.Pid
 import HFish.Interpreter.Process.FdSetup
-import qualified HFish.Interpreter.Stringy as Str
+import qualified HFish.Interpreter.Str as Str
 
 
 fishWaitForProcess :: String -> ProcessID -> Fish ()

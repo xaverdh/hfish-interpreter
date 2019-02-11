@@ -28,7 +28,7 @@ library
   exposed-modules:     HFish.Interpreter.Interpreter
   exposed-modules:     HFish.Interpreter.Globbed
   exposed-modules:     HFish.Interpreter.Env
-  exposed-modules:     HFish.Interpreter.Stringy
+  exposed-modules:     HFish.Interpreter.Str
   exposed-modules:     HFish.Interpreter.FdTable
   exposed-modules:     HFish.Interpreter.Builtins
   exposed-modules:     HFish.Interpreter.Concurrent

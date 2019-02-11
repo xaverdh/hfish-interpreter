@@ -5,7 +5,7 @@ import Fish.Lang
 import HFish.Interpreter.Core
 import HFish.Interpreter.Var
 import HFish.Interpreter.Env as Env
-import qualified HFish.Interpreter.Stringy as Str
+import qualified HFish.Interpreter.Str as Str
 
 import qualified Data.Text as T
 import qualified Data.Sequence as Seq

@@ -4,6 +4,7 @@ module HFish.Interpreter.Interpreter where
 import Fish.Lang hiding (Scope)
 import qualified Fish.Lang as L
 
+import HFish.Interpreter.Str (Str)
 import HFish.Interpreter.Scope
 import HFish.Interpreter.Core
 import HFish.Interpreter.FdTable as FdT
@@ -18,7 +19,7 @@ import HFish.Interpreter.Slice
 import HFish.Interpreter.Util
 import HFish.Interpreter.ExMode
 import HFish.Interpreter.Env as Env
-import qualified HFish.Interpreter.Stringy as Str
+import qualified HFish.Interpreter.Str as Str
 import qualified HFish.Interpreter.SetCmd as SetCmd
 import qualified HFish.Interpreter.FuncSt as FuncSt
 

@@ -4,6 +4,7 @@ module HFish.Interpreter.SetCmd where
 import Fish.Lang hiding (Scope)
 import qualified Fish.Lang as L
 import HFish.Interpreter.Scope as VS
+import HFish.Interpreter.Str (Str)
 import HFish.Interpreter.Core
 import HFish.Interpreter.Util
 import HFish.Interpreter.IO
@@ -11,7 +12,7 @@ import HFish.Interpreter.Var
 import HFish.Interpreter.Status
 import HFish.Interpreter.Slice
 import Data.NText
-import qualified HFish.Interpreter.Stringy as Str
+import qualified HFish.Interpreter.Str as Str
 import qualified HFish.Interpreter.Env as Env
 
 import Control.Lens

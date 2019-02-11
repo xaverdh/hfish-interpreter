@@ -10,9 +10,10 @@ module HFish.Interpreter.Globbed (
 ) where
 
 import Fish.Lang
+import HFish.Interpreter.Str (Str)
 import HFish.Interpreter.Core
 import HFish.Interpreter.Util
-import qualified HFish.Interpreter.Stringy as Str
+import qualified HFish.Interpreter.Str as Str
 
 import qualified Data.Text as T
 import qualified Data.Foldable as F
@@ -72,7 +73,7 @@ globExpand globbed =
         <$> recurseDirRel True (Str.toString wdir)
       if Seq.null paths
         then noMatchErr globbed
-        else pure . fmap Str.fromString $ paths
+        else pure . fmap fromString $ paths
   where
     parser = genParser globbed
     getMatches = Seq.filter $ isJust . (=~ parser)

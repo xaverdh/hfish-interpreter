@@ -2,13 +2,14 @@
 module HFish.Interpreter.Var where
 
 import Fish.Lang hiding (Scope)
+import HFish.Interpreter.Str (Str)
 import HFish.Interpreter.Scope
 import HFish.Interpreter.Core
 import HFish.Interpreter.Util
 import qualified Data.NText as NText
 import Data.NText (NText,extractText)
 import HFish.Interpreter.Env as Env
-import qualified HFish.Interpreter.Stringy as Str
+import qualified HFish.Interpreter.Str as Str
 
 import qualified Data.Map as M
 import qualified Data.Text as T
@@ -68,7 +69,7 @@ getVar ident = getVarMaybe ident >>= \case
   Just v -> pure v
   Nothing -> errork
     $ "Lookup of variable "
-    <> Str.toString (extractText ident)
+    <> show (extractText ident)
     <> " failed."
 
 getVarValue :: NText -> Fish (Seq Str)

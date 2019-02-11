@@ -9,6 +9,7 @@ module HFish.Interpreter.Slice (
 ) where
 
 import Fish.Lang
+import HFish.Interpreter.Str (Str)
 import HFish.Interpreter.Core
 import HFish.Interpreter.Util
 

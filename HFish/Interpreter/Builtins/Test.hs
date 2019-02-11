@@ -3,11 +3,12 @@ module HFish.Interpreter.Builtins.Test (
   testF
 ) where
 
+import HFish.Interpreter.Str (Str)
 import HFish.Interpreter.Core
 import HFish.Interpreter.IO
 import HFish.Interpreter.Util
 import HFish.Interpreter.Status
-import qualified HFish.Interpreter.Stringy as Str
+import qualified HFish.Interpreter.Str as Str
 
 import Data.Semigroup
 import Data.Functor

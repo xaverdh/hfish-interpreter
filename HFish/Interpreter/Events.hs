@@ -1,11 +1,12 @@
 {-# language LambdaCase, OverloadedStrings #-}
 module HFish.Interpreter.Events where
 
+import HFish.Interpreter.Str (Str)
 import HFish.Interpreter.Core
 import HFish.Interpreter.Util
 import Data.NText
 import HFish.Interpreter.Env as Env
-import qualified HFish.Interpreter.Stringy as Str
+import qualified HFish.Interpreter.Str as Str
 
 import Control.Lens
 import Control.Monad
@@ -61,7 +62,7 @@ parseSigSpec sigspec
   | Just sig <- sigFromName sigspec = pure sig
   | otherwise = errork
     $ "unknown signal: "
-    <> Str.toString sigspec
+    <> show sigspec
 
 sigFromName :: T.Text -> Maybe Signal
 sigFromName t =

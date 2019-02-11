@@ -2,6 +2,7 @@
 module HFish.Interpreter.Core where
 
 import Fish.Lang
+import HFish.Interpreter.Str (Str)
 import HFish.Interpreter.Util
 import HFish.Interpreter.FdTable as FdT
 import HFish.Interpreter.Env as Env
@@ -64,9 +65,6 @@ projectIO f = do
 --
 asIO :: Fish () -> (IO FishState -> Fish a) -> Fish a
 asIO f g = projectIO f >>= g
-
--- The /string/ type
-type Str = B.ByteString
 
 -- | The type of a fish /variable/
 data Var = Var {

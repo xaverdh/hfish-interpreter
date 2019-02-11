@@ -3,12 +3,13 @@ module HFish.Interpreter.Builtins.Printf (
   printfF
 ) where
 
+import HFish.Interpreter.Str (Str)
 import HFish.Interpreter.Core
 import HFish.Interpreter.IO
 import HFish.Interpreter.Status
 import HFish.Interpreter.Util
 import HFish.Interpreter.Args
-import qualified HFish.Interpreter.Stringy as Str
+import qualified HFish.Interpreter.Str as Str
 import Fish.Lang
 
 import qualified Data.Text as T

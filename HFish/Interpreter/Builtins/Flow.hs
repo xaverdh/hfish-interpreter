@@ -8,7 +8,7 @@ module HFish.Interpreter.Builtins.Flow (
 import HFish.Interpreter.Core
 import HFish.Interpreter.Util
 import HFish.Interpreter.Args
-import HFish.Interpreter.Stringy (readStrMaybe)
+import HFish.Interpreter.Str (readStrMaybe)
 import HFish.Interpreter.Status
 
 import Control.Lens

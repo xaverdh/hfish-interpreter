@@ -11,7 +11,7 @@ import HFish.Interpreter.Process.Process
 import HFish.Interpreter.Status
 import HFish.Interpreter.Util
 import HFish.Interpreter.Args
-import qualified HFish.Interpreter.Stringy as Str
+import qualified HFish.Interpreter.Str as Str
 
 import Control.Lens
 import Control.Monad
