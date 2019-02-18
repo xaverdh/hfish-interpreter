@@ -59,7 +59,7 @@ fishWaitForProcess name pid =
 
 fishCreateProcess :: String -> [String] -> Fish ProcessID
 fishCreateProcess name args = do
-  assertProgExecutable name
+  exePath <- getExecutable name
   getCWD >>= liftIO . setCurrentDirectory . Str.toString
   --   This is necessary since the current working directory
   --   is separate from the environment passed to the process.
@@ -69,8 +69,8 @@ fishCreateProcess name args = do
   env <- currentEnvironment
   pid <- forkWithFileDescriptors $
     executeFile 
-      name
-      True{-search path-}
+      exePath
+      False{-dont search path, getExecutable already did that-}
       args
       ( Just env )
   updateLastPID pid
@@ -78,7 +78,7 @@ fishCreateProcess name args = do
 
 fishExec :: String -> [String] -> Fish a
 fishExec name args = do
-  assertProgExecutable name
+  exePath <- getExecutable name
   getCWD >>= liftIO . setCurrentDirectory . Str.toString
   --   This is necessary since the current working directory
   --   is separate from the environment passed to the process.
@@ -88,17 +88,20 @@ fishExec name args = do
   env <- currentEnvironment
   realiseFileDescriptors
   liftIO $ executeFile
-    name
-    True{-search path-}
+    exePath
+    False{-dont search path, getExecutable already did that-}
     args
     ( Just env )
 
-assertProgExecutable :: FilePath -> Fish ()
-assertProgExecutable path =
+-- Get the path to given executable description (name or path).
+-- Calls errork if the executable can not be obtained.
+getExecutable :: FilePath -> Fish FilePath
+getExecutable path =
   liftIO (findExecutable path) >>= \case
     Nothing -> errork $ path <> " could not be found."
-    Just path' -> unlessM
+    Just path' -> ifM
       ( liftIO $ fileAccess path' False False True )
+      ( pure path' )
       $ errork (path' <> " is not executable.")
 
 currentEnvironment :: Fish [(String,String)]
